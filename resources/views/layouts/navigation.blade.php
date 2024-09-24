@@ -24,7 +24,8 @@
 
                 <li class="nav-header">General</li>
                 <li class="nav-item">
-                    <a href="{{ route('admin.dashboard') }}" class="nav-link ">
+                    <a href="{{ route('admin.dashboard') }}"
+                        class="nav-link @if (Request::segment(2) == 'dashboard') active @endif">
                         <i class="nav-icon fas fa-home"></i>
                         <p>
                             Dashboard
@@ -32,22 +33,22 @@
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="#" class="nav-link @if (Request::segment(2) == 'product' || Request::segment(2) == 'supplier') active @endif">
                         <i class="nav-icon fas fa-database"></i>
                         <p>
                             Master
                             <i class="right fas fa-angle-left"></i>
                         </p>
                     </a>
-                    <ul class="nav nav-treeview">
+                    <ul class="nav nav-treeview ">
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link @if (Request::segment(2) == 'product') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Product</p>
                             </a>
                         </li>
                         <li class="nav-item">
-                            <a href="#" class="nav-link">
+                            <a href="#" class="nav-link @if (Request::segment(2) == 'supplier') active @endif">
                                 <i class="far fa-circle nav-icon"></i>
                                 <p>Supplier</p>
                             </a>
@@ -57,14 +58,15 @@
 
                 <li class="nav-header">Management</li>
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="#" class="nav-link @if (Request::segment(2) == 'user') active @endif">
                         <i class="fas fa-users nav-icon"></i>
                         <p>User</p>
                     </a>
                 </li>
 
                 <li class="nav-item">
-                    <a href="{{ route('role.index') }}" class="nav-link">
+                    <a href="{{ route('role.index') }}"
+                        class="nav-link @if (Request::segment(2) == 'role') active @endif">
                         <i class="fas fa-users-cog nav-icon"></i>
                         <p>Role</p>
                     </a>
