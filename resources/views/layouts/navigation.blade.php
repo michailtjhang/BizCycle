@@ -64,7 +64,7 @@
                 </li>
 
                 <li class="nav-item">
-                    <a href="#" class="nav-link">
+                    <a href="{{ route('role.index') }}" class="nav-link">
                         <i class="fas fa-users-cog nav-icon"></i>
                         <p>Role</p>
                     </a>
