@@ -19,6 +19,10 @@
             </div>
         </div>
         <nav class="mt-2">
+            @php
+                $PermissionUser = App\Models\PermissionRole::getPermission('User', Auth::user()->role_id);
+                $PermissionRole = App\Models\PermissionRole::getPermission('Role', Auth::user()->role_id);
+            @endphp
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
 
@@ -57,20 +61,25 @@
                 </li>
 
                 <li class="nav-header">Management</li>
-                <li class="nav-item">
-                    <a href="{{ route('user.index') }}" class="nav-link @if (Request::segment(2) == 'user') active @endif">
-                        <i class="fas fa-users nav-icon"></i>
-                        <p>User</p>
-                    </a>
-                </li>
+                @if (!empty($PermissionUser))
+                    <li class="nav-item">
+                        <a href="{{ route('user.index') }}"
+                            class="nav-link @if (Request::segment(2) == 'user') active @endif">
+                            <i class="fas fa-users nav-icon"></i>
+                            <p>User</p>
+                        </a>
+                    </li>
+                @endif
 
-                <li class="nav-item">
-                    <a href="{{ route('role.index') }}"
-                        class="nav-link @if (Request::segment(2) == 'role') active @endif">
-                        <i class="fas fa-users-cog nav-icon"></i>
-                        <p>Role</p>
-                    </a>
-                </li>
+                @if (!empty($PermissionRole))
+                    <li class="nav-item">
+                        <a href="{{ route('role.index') }}"
+                            class="nav-link @if (Request::segment(2) == 'role') active @endif">
+                            <i class="fas fa-users-cog nav-icon"></i>
+                            <p>Role</p>
+                        </a>
+                    </li>
+                @endif
 
                 <li class="nav-item absolute-bottom">
                     <a href="{{ route('logout') }}" class="nav-link bg-danger">
@@ -80,7 +89,7 @@
                         </p>
                     </a>
                 </li>
-                
+
             </ul>
         </nav>
     </div>

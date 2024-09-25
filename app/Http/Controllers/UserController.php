@@ -5,9 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Models\User;
 use Illuminate\Http\Request;
+use App\Models\PermissionRole;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-
-use function Symfony\Component\String\b;
 
 class UserController extends Controller
 {
@@ -16,7 +16,16 @@ class UserController extends Controller
      */
     public function index()
     {
-        $data = User::getRecords();
+        $PermissionRole = PermissionRole::getPermission('User', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
+        $data['PermissionAdd'] = PermissionRole::getPermission('Add User', Auth::user()->role_id);
+        $data['PermissionEdit'] = PermissionRole::getPermission('Edit User', Auth::user()->role_id);
+        $data['PermissionDelete'] = PermissionRole::getPermission('Delete User', Auth::user()->role_id);
+        
+        $data['user'] = User::getRecords();
         return view('admin.user.index', [
             'page_title' => 'User List',
             'data' => $data
@@ -28,6 +37,11 @@ class UserController extends Controller
      */
     public function create()
     {
+        $PermissionRole = PermissionRole::getPermission('Add User', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
         $data = Role::getRecords();
         return view('admin.user.create', [
             'page_title' => 'Add New User',
@@ -40,6 +54,11 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+        $PermissionRole = PermissionRole::getPermission('Add User', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
         $request->validate([
             'name' => 'required',
             'email' => 'required|email|unique:users',
@@ -67,6 +86,11 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
+        $PermissionRole = PermissionRole::getPermission('Edit User', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
         $data['user'] = User::getSingleRecord($id);
         $data['role'] = Role::getRecords();
         return view('admin.user.edit', [
@@ -80,6 +104,11 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $PermissionRole = PermissionRole::getPermission('Edit User', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
         $request->validate([
             'name' => 'required',
             'email' => 'required|email',
@@ -111,6 +140,11 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
+        $PermissionRole = PermissionRole::getPermission('Delete User', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
         $user = User::getSingleRecord($id);
         $user->delete();
 

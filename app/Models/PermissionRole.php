@@ -17,6 +17,16 @@ class PermissionRole extends Model
         'role_id',
     ];
 
+    public function permission()
+    {
+        return $this->belongsTo(Permission::class);
+    }
+
+    public function role()
+    {
+        return $this->belongsTo(Role::class);
+    }
+
     static function InsertUpdateRecord($permission_ids, $role_id)
     {
         PermissionRole::where('role_id', $role_id)->delete();
@@ -32,5 +42,15 @@ class PermissionRole extends Model
     static function getRolePermission($id)
     {
         return PermissionRole::where('role_id', $id)->pluck('permission_id')->all();
+    }
+
+    static function getPermission($slug, $role_id)
+    {
+        return PermissionRole::with('permission')
+            ->where('role_id', $role_id)
+            ->whereHas('permission', function ($query) use ($slug) {
+                $query->where('slug', $slug);
+            })
+            ->count();
     }
 }
