@@ -11,7 +11,8 @@
             </ol>
         </nav>
         <div class="card-body">
-            <form action="{{ route('role.store') }}" method="POST">
+            <form action="{{ route('role.store') }}" method="post">
+
                 @csrf
 
                 <div class="form-group">
@@ -26,6 +27,30 @@
                     @enderror
 
                 </div>
+
+                <div class="form-group">
+                    <label for="exampleSelectRounded0">Permission</label>
+                    
+                        @foreach ($data as $row)
+                            <div class="row mb-2">
+                                <div class="col-md-3">
+                                    {{ $row['name'] }}
+                                </div>
+                                <div class="col-md-9">
+                                    <div class="row">
+                                        @foreach ($row['group'] as $group)
+                                            <div class="col-md-3">
+                                                <input type="checkbox" name="permission[]" value="{{ $group['id'] }}">
+                                                {{ $group['name'] }}
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+                            </div>
+                            <hr>
+                        @endforeach
+                </div>
+
 
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </form>

@@ -25,10 +25,17 @@ class AuthController extends Controller
         ]);
 
         $remember = $request->has('remember') ? true : false;
-        if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember)) {
-            return redirect()->intended('admin/dashboard');
+
+        $user = User::where('email', $request->email)->first();
+
+        if ($user) {
+            if (Auth::attempt(['email' => $request->email, 'password' => $request->password], $remember)) {
+                return redirect()->intended('admin/dashboard');
+            } else {
+                return redirect()->back()->with('error', 'Incorrect password. Please try again.');
+            }
         } else {
-            return redirect()->back()->with('error', 'Please check your email and password');
+            return redirect()->back()->with('error', 'Email not found. Please register first.');
         }
     }
 
@@ -41,7 +48,7 @@ class AuthController extends Controller
     {
         $request->validate([
             'name' => 'required',
-            'email' => 'required|email|unique',
+            'email' => 'required|email|unique:users',
             'password' => 'required|min:8',
         ], [
             'name.required' => 'Name is required',
@@ -55,9 +62,9 @@ class AuthController extends Controller
         $data = $request->all();
         $data['password'] = Hash::make($data['password']);
         $user = User::create($data);
-        
+
         if ($user) {
-            return redirect()->intended('admin/dashboard');
+            return redirect()->intended('/');
         } else {
             return redirect()->back()->with('error', 'Something went wrong');
         }

@@ -29,6 +29,7 @@
                 @include('_message')
 
                 <form action="{{ route('register') }}" method="post">
+                    @csrf
                     <div class="input-group mb-3">
                         <input type="text" class="form-control" name="name" placeholder="Full name">
                         <div class="input-group-append">
@@ -78,7 +79,7 @@
                     </div>
                 </form>
 
-                <a href="{{ route('/') }}" class="text-center">I already have a membership</a>
+                <a href="{{ route('login') }}" class="text-center">I already have a membership</a>
             </div>
             <!-- /.form-box -->
         </div><!-- /.card -->

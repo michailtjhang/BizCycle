@@ -5,16 +5,21 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\RoleController;
 use Illuminate\Support\Facades\Route;
 
-
+// Route
 Route::get('/', [AuthController::class, 'login'])->name('login');
 Route::post('/', [AuthController::class, 'auth_login']);
-Route::get('/register', [AuthController::class, 'register'])->name('register');
-Route::post('/register', [AuthController::class, 'auth_register']);
+
+Route::get('register', [AuthController::class, 'register'])->name('register');
+Route::post('register', [AuthController::class, 'auth_register']);
+
 Route::get('logout', [AuthController::class, 'logout'])->name('logout');
 
-Route::group(['middleware' => 'useradmin'], function () {
+Route::group(['middleware' => ['auth', 'useradmin']], function () {
 
-    Route::get('admin/dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+    Route::prefix('admin')->group(function () {
 
-    Route::resource('admin/role', RoleController::class);
+        Route::get('dashboard', [DashboardController::class, 'index'])->name('admin.dashboard');
+
+        Route::resource('role', RoleController::class);
+    });
 });
