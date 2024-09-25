@@ -30,27 +30,31 @@
 
                 <div class="form-group">
                     <label for="exampleSelectRounded0">Permission</label>
-                    
-                        @foreach ($data as $row)
-                            <div class="row mb-2">
-                                <div class="col-md-3">
-                                    {{ $row['name'] }}
-                                </div>
-                                <div class="col-md-9">
-                                    <div class="row">
-                                        @foreach ($row['group'] as $group)
-                                            <div class="col-md-3">
-                                                <input type="checkbox" name="permission[]" value="{{ $group['id'] }}">
-                                                {{ $group['name'] }}
-                                            </div>
-                                        @endforeach
-                                    </div>
+
+                    @foreach ($data as $row)
+                        <div class="row mb-2">
+                            <div class="col-md-3">
+                                {{ $row['name'] }}
+                            </div>
+                            <div class="col-md-9">
+                                <div class="row">
+                                    
+                                    @foreach ($row['group'] as $group)
+                                        <div class="col-md-3">
+                                            <input type="checkbox" value="{{ $group['id'] }}" name="permission_id[]"
+                                                value="{{ $group['id'] }}" id="{{ $group['id'] }}">
+                                            <label class="form-check-label"
+                                                for="{{ $group['id'] }}">{{ $group['name'] }}</label>
+                                        </div>
+                                    @endforeach
+
                                 </div>
                             </div>
-                            <hr>
-                        @endforeach
-                </div>
+                        </div>
+                        <hr>
+                    @endforeach
 
+                </div>
 
                 <button type="submit" class="btn btn-primary">Simpan</button>
             </form>

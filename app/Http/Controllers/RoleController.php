@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Role;
 use App\Models\Permission;
+use App\Models\PermissionRole;
 use Illuminate\Http\Request;
 
 class RoleController extends Controller
@@ -39,15 +40,18 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $request->validate([
             'name' => 'required',
         ], [
             'name.required' => 'Role name is required',
         ]);
 
-        Role::create([
+        $role = Role::create([
             'name' => $request->name,
         ]);
+
+        PermissionRole::InsertUpdateRecord($request->permission_id, $role->id);
 
         return redirect('admin/role')->with('success', 'Role created successfully');
     }
@@ -65,7 +69,9 @@ class RoleController extends Controller
      */
     public function edit(string $id)
     {
-        $data = Role::getRecord($id);
+        $data['role'] = Role::getRecord($id);
+        $data['permission'] = Permission::getRecords();
+        $data['permissionRole'] = PermissionRole::getRolePermission($id);
 
         return view('admin.role.edit', [
             'page_title' => 'Role Detail',
@@ -88,6 +94,8 @@ class RoleController extends Controller
         Role::getRecord($id)->update([
             'name' => $request->name,
         ]);
+
+        PermissionRole::InsertUpdateRecord($request->permission_id, $id);
 
         return redirect('admin/role')->with('success', 'Role updated successfully');
     }
