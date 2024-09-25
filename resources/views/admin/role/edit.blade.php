@@ -30,7 +30,7 @@
                 </div>
 
                 <div class="form-group">
-                    <label for="exampleSelectRounded0">Permission</label>
+                    <label for="permission">Permission</label>
 
                     @foreach ($data['permission'] as $row)
                         <div class="row mb-2">

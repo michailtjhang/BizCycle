@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Role;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+
+use function Symfony\Component\String\b;
 
 class UserController extends Controller
 {
@@ -11,8 +16,10 @@ class UserController extends Controller
      */
     public function index()
     {
+        $data = User::getRecords();
         return view('admin.user.index', [
             'page_title' => 'User List',
+            'data' => $data
         ]);
     }
 
@@ -21,7 +28,11 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        $data = Role::getRecords();
+        return view('admin.user.create', [
+            'page_title' => 'Add New User',
+            'data' => $data
+        ]);
     }
 
     /**
@@ -29,7 +40,18 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8',
+            'role_id' => 'required',
+        ]);
+
+        $data = $request->all();
+        $data['password'] = Hash::make($data['password']);
+        $user = User::create($data);
+
+        return redirect('admin/user')->with('success', 'User created successfully');
     }
 
     /**
@@ -45,7 +67,12 @@ class UserController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $data['user'] = User::getSingleRecord($id);
+        $data['role'] = Role::getRecords();
+        return view('admin.user.edit', [
+            'page_title' => 'Edit User',
+            'data' => $data
+        ]);
     }
 
     /**
@@ -53,7 +80,30 @@ class UserController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required|email',
+            'password' => 'nullable|min:8',
+            'role_id' => 'required',
+        ]);
+
+        $user = User::getSingleRecord($id);
+        if (empty($request->password)) {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'role_id' => $request->role_id
+            ]);
+        } else {
+            $user->update([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'role_id' => $request->role_id
+            ]);
+        }
+
+        return redirect('admin/user')->with('success', 'User updated successfully');
     }
 
     /**
@@ -61,6 +111,9 @@ class UserController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        $user = User::getSingleRecord($id);
+        $user->delete();
+
+        return back()->with('success', 'User deleted successfully');
     }
 }

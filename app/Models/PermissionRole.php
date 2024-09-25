@@ -10,6 +10,7 @@ class PermissionRole extends Model
 {
     use HasFactory, HasUuids;
 
+    protected $keyType = 'string';
     protected $table = 'permission_role';
     protected $fillable = [
         'permission_id',

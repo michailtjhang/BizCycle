@@ -17,6 +17,11 @@ class Role extends Model
         'name',
     ];
 
+    public function users()
+    {
+        return $this->hasMany(User::class);
+    }
+
     static public function getRecords()
     {
         return Role::get();
