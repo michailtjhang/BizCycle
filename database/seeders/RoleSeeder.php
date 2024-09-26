@@ -22,7 +22,7 @@ class RoleSeeder extends Seeder
             ],
             [
                 'id' => '01j8kkdbh8zrcamhvrmkesrsxy',
-                'name' => 'Employee',
+                'name' => 'Supplier',
                 'created_at' => '2024-09-24 20:25:47',
                 'updated_at' => '2024-09-24 20:25:47'
             ],

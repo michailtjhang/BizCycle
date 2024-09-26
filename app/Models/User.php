@@ -17,6 +17,7 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
+        'id_user',
         'role_id',
         'name',
         'email',
@@ -33,9 +34,22 @@ class User extends Authenticatable
         return User::with('role')->find($id);
     }
 
+    static public function getSupplierById()
+    {
+        return User::with('role')
+        ->whereHas('role', fn($query) => $query
+            ->where('name', 'Supplier'))
+        ->get();
+    }
+
     public function role()
     {
         return $this->belongsTo(Role::class);
+    }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
     }
 
     /**

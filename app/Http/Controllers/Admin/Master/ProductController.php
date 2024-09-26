@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Admin\Master;
 
 use App\Models\Product;
-use App\Models\Supplier;
 use Illuminate\Http\Request;
+use App\Models\PermissionRole;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 
@@ -12,7 +12,15 @@ class ProductController extends Controller
 {
     public function index()
     {
-        $data = Product::where('id_user', Auth::user()->id_user)->get();
+        $PermissionRole = PermissionRole::getPermission('Product', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
+        $data['PermissionAdd'] = PermissionRole::getPermission('Add Product', Auth::user()->role_id);
+        $data['PermissionEdit'] = PermissionRole::getPermission('Edit Product', Auth::user()->role_id);
+        $data['PermissionDelete'] = PermissionRole::getPermission('Delete Product', Auth::user()->role_id);
+        $data['product'] = Product::where('id_user', Auth::user()->id_user)->get();
         return view('admin.master.product.index', [
             'data' => $data,
             'page_title' => 'Daftar Product',
@@ -24,6 +32,11 @@ class ProductController extends Controller
      */
     public function create()
     {
+        $PermissionRole = PermissionRole::getPermission('Add Product', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
         return view('admin.master.product.create', [
             'page_title' => 'Tambah Daftar Product',
         ]);
@@ -34,6 +47,11 @@ class ProductController extends Controller
      */
     public function store(Request $request)
     {
+        $PermissionRole = PermissionRole::getPermission('Add Product', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
         $request->validate(
             [
                 'nama' => 'required | min:3 | string',
@@ -58,18 +76,15 @@ class ProductController extends Controller
             $kodeProduct = $Code . $kode;
         }
 
-        // $id_supplier = Supplier::where('id_user', auth()->user()->id_user)->first('id_supplier');
-
         Product::create([
             'id_product' => $kodeProduct,
             'name_product' => $request->nama,
             'harga_satuan' => $request->harga,
             'stok_product' => $request->stok,
             'id_user' => Auth::user()->id_user,
-            // 'id_supplier' => $id_supplier->id_supplier,
         ]);
 
-        return redirect('/admin/product');
+        return redirect('/admin/product')->with('success', 'Product created successfully');
     }
 
     /**
@@ -85,6 +100,11 @@ class ProductController extends Controller
      */
     public function edit(string $id)
     {
+        $PermissionRole = PermissionRole::getPermission('Edit Product', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
         $dataProduct = Product::where('id', $id)->first();
 
         return view('admin.master.product.edit', [
@@ -98,6 +118,11 @@ class ProductController extends Controller
      */
     public function update(Request $request, string $id)
     {
+        $PermissionRole = PermissionRole::getPermission('Edit Product', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
         $request->validate(
             [
                 'nama' => 'required | min:3 | string',
@@ -117,7 +142,7 @@ class ProductController extends Controller
             'stok_product' => $request->stok,
         ]);
 
-        return redirect('/admin/product');
+        return redirect('/admin/product')->with('success', 'Product updated successfully');
     }
 
     /**
@@ -125,6 +150,11 @@ class ProductController extends Controller
      */
     public function destroy(string $id)
     {
+        $PermissionRole = PermissionRole::getPermission('Delete Product', Auth::user()->role_id);
+        if (empty($PermissionRole)) {
+            abort(404);
+        }
+
         $product = Product::findOrFail($id);
         $product->delete();
 

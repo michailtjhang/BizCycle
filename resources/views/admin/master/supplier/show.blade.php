@@ -6,8 +6,8 @@
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
                 <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
-                <li class="breadcrumb-item"><a href="{{ route('supplier.index') }}">Daftar Supplier</a></li>
-                <li class="breadcrumb-item active" aria-current="page">Daftar Product</li>
+                <li class="breadcrumb-item"><a href="{{ route('supplier.index') }}">Supplier List</a></li>
+                <li class="breadcrumb-item active" aria-current="page">{{ $page_title }}</li>
             </ol>
         </nav>
         <div class="card-body">

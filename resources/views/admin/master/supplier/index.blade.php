@@ -11,36 +11,39 @@
         </nav>
         <div class="card-body">
             <div class="table-responsive">
-                @if (Auth()->user()->role == 'admin')
-                    <a href="{{ route('supplier.create') }}" class="btn btn-success mb-2 btn-sm">Tambah Daftar
-                        Supplier</a>
-                @endif
                 <table class="table table-bordered table-hover table-stripped">
                     <thead>
                         <tr>
                             <th>No</th>
                             <th>Nama Supplier</th>
-                            <th>Alamat Supplier</th>
-                            <th>No. Telp</th>
-                            <th>Email</th>
-                            <th>Aksi</th>
+                            <th>Email Supplier</th>
+                            @if (!empty($data['PermissionShow']))
+                                <th>Aksi</th>
+                            @endif
                         </tr>
                     </thead>
                     <tbody>
-                        @foreach ($data as $row)
+                        @if (count($data['supplier']) == 0)
                             <tr>
-                                <td class="text-center">{{ $loop->iteration }}</td>
-                                <td>{{ $row->name_supplier }}</td>
-                                <td>{{ $row->address_supplier }}</td>
-                                <td>{{ $row->phone_supplier }}</td>
-                                <td>{{ $row->email_supplier }}</td>
-                                <td>
-                                    <a href="{{ route('supplier.show', $row->id_user) }}" class="btn btn-sm btn-warning">
-                                        <i class="fas fa-fw fa-eye"></i>
-                                    </a>
-                                </td>
+                                <td colspan="6" class="text-center">Tidak ada data</td>
                             </tr>
-                        @endforeach
+                        @else
+                            @foreach ($data['supplier'] as $row)
+                                <tr>
+                                    <td>{{ $loop->iteration }}</td>
+                                    <td>{{ $row->name }}</td>
+                                    <td>{{ $row->email }}</td>
+                                    @if (!empty($data['PermissionShow']))
+                                        <td>
+                                            <a href="{{ route('supplier.show', $row->id_user) }}"
+                                                class="btn btn-sm btn-warning">
+                                                <i class="fas fa-fw fa-eye"></i>
+                                            </a>
+                                        </td>
+                                    @endif
+                                </tr>
+                            @endforeach
+                        @endif
                     </tbody>
                 </table>
             </div>

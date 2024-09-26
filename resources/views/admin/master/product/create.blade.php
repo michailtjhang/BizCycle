@@ -52,12 +52,7 @@
                     @enderror
 
                 </div>
-
-                @if (Auth::user()->role == 'supplier')
-                    <button type="submit" class="btn btn-primary">Simpan</button>
-                @else
-                    <button type="submit" class="btn btn-warning" disabled>Simpan</button>
-                @endif
+                <button type="submit" class="btn btn-primary">Simpan</button>
             </form>
         </div>
     </div>

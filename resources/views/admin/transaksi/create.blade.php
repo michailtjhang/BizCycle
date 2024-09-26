@@ -13,7 +13,7 @@
                             <select class="form-control" id="id_supplier">
                                 <option value="">Pilih Supplier</option>
                                 @foreach ($dataSupplier as $supplier)
-                                    <option value="{{ $supplier->id_supplier }}">{{ $supplier->name_supplier }}</option>
+                                    <option value="{{ $supplier->id_user }}">{{ $supplier->name }}</option>
                                 @endforeach
                             </select>
                         </div>
@@ -51,17 +51,24 @@
                             </tbody>
                             <tfoot>
                                 <tr>
+                                    <th colspan="3">Diskon</th>
+                                    <th class="totalDiskon">Rp. 0</th>
+                                    <th></th>
+                                </tr>
+                                <tr>
                                     <th colspan="2">Jumlah</th>
                                     <th class="quantity">0</th>
-                                    <th class="totalHarga">0</th>
+                                    <th class="totalHarga">Rp. 0</th>
                                     <th></th>
                                 </tr>
                             </tfoot>
+
                         </table>
                     </div>
                 </div>
                 <div class="row">
                     <div class="col-md-12">
+                        <input type="hidden" name="total_diskon" value="0">
                         <input type="hidden" name="total_harga" value="0">
                         <button class="btn btn-success">Simpan Transaksi</button>
                     </div>
@@ -73,6 +80,7 @@
 @section('js')
     <script>
         var totalHarga = 0;
+        var totalDiskon = 0;
         var quantity = 0;
         var listItem = [];
 
@@ -95,35 +103,73 @@
         function tambahItem() {
             var selectedProduct = $('#id_product').find(':selected');
             var hargaSatuan = parseInt(selectedProduct.data('harga'));
-            updateTotalHarga(hargaSatuan);
-            var item = listItem.filter(el => el.id_product === selectedProduct.data('id'));
+            var productId = selectedProduct.data('id');
+            var stokProduct = parseInt(selectedProduct.data('stok'));
+            var item = listItem.filter(el => el.id_product === productId);
+
             if (item.length > 0) {
-                item[0].quantity += 1;
+                if (item[0].quantity < stokProduct) {
+                    item[0].quantity += 1;
+                    updateQuantity(1);
+                    updateTotalHarga(hargaSatuan);
+
+                    if (item.length > 0 && item[0].quantity % 10 === 0) {
+                        item[0].diskon = item[0].harga_satuan * 0.1 * item[0].quantity;
+                        totalDiskon += item[0].harga_satuan * 0.1;
+                    }
+                    updateTotalDiskon(totalHarga, totalDiskon);
+                } else {
+                    alert('Stok tidak mencukupi!');
+                }
             } else {
                 var newItem = {
-                    id_product: selectedProduct.data('id'),
+                    id_product: productId,
                     name_product: selectedProduct.data('nama'),
                     harga_satuan: hargaSatuan,
-                    quantity: 1
+                    quantity: 1,
+                    diskon: 0,
+                    stok: stokProduct
                 };
                 listItem.push(newItem);
+                updateQuantity(1);
+                updateTotalHarga(hargaSatuan);
+
+                if (item.length > 0 && item[0].quantity % 10 === 0) {
+                    item[0].diskon = item[0].harga_satuan * 0.1 * item[0].quantity;
+                    totalDiskon += item[0].harga_satuan * 0.1;
+                }
+                updateTotalDiskon(totalHarga, totalDiskon);
             }
-            updateQuantity(1);
+
             updateTable();
         }
 
         function deleteItem(index) {
             var item = listItem[index];
+
             if (item.quantity > 1) {
                 listItem[index].quantity -= 1;
                 updateTotalHarga(-item.harga_satuan);
                 updateQuantity(-1);
+                
+                // Jika jumlah item menjadi kurang dari konstanta 10, kembalikan diskon
+                if (listItem[index].quantity % 10 === 9) {
+                    item.diskon = item.harga_satuan * 0.1;
+                    console.log('Item dikurangi ' + totalDiskon + ' ' + totalHarga + ' ' + item.diskon);
+                    totalDiskon = totalDiskon - item.diskon;
+                    listItem[index].diskon = 0;
+                } 
+                updateTotalDiskon(totalHarga, totalDiskon);
+
+                updateTable();
+
             } else {
                 updateTotalHarga(-(item.harga_satuan * item.quantity));
                 updateQuantity(-(item.quantity));
                 listItem.splice(index, 1);
+                emptyTable();
             }
-            updateTable();
+
         }
 
         function updateTable() {
@@ -131,27 +177,37 @@
             listItem.map((el, index) => {
                 var harga_satuan = formatRupiah(el.harga_satuan.toString());
                 var quantity = el.quantity;
+                var diskon = formatRupiah(el.diskon.toString());
+
                 html += `
-                <tr>
-                    <td>${index + 1}</td>
-                    <td>${el.name_product}</td>
-                    <td>${quantity}</td>
-                    <td>${harga_satuan}</td>
-                    <td>
-                        <input type="hidden" name="id_product[]" value="${el.id_product}">
-                        <input type="hidden" name="quantity[]" value="${el.quantity}">
-                        <button type="button" onclick="deleteItem(${index})" class="btn btn-link"><i class="fas fa-fw fa-trash text-danger"></i></button>
-                    </td>
-                </tr>
-                `;
+        <tr>
+            <td>${index + 1}</td>
+            <td>${el.name_product}</td>
+            <td>${quantity}</td>
+            <td>${harga_satuan}</td>
+            <td>
+                <input type="hidden" name="id_product[]" value="${el.id_product}">
+                <input type="hidden" name="quantity[]" value="${el.quantity}">
+                <button type="button" onclick="deleteItem(${index})" class="btn btn-link"><i class="fas fa-fw fa-trash text-danger"></i></button>
+            </td>
+        </tr>
+        `;
             });
             $('.transaksiItem').html(html);
+            $('.totalDiskon').html(formatRupiah(totalDiskon.toString()));
         }
 
         function updateTotalHarga(nom) {
             totalHarga = totalHarga + nom;
             $('[name=total_harga]').val(totalHarga);
             $('.totalHarga').html(formatRupiah(totalHarga.toString()));
+        }
+
+        function updateTotalDiskon(totalHarga, totalDiskon) {
+            var hargaSetelahDiskon = totalHarga - totalDiskon;
+            $('[name=total_diskon]').val(totalDiskon);
+            $('[name=total_harga]').val(hargaSetelahDiskon);
+            $('.totalHarga').html(formatRupiah(hargaSetelahDiskon.toString()));
         }
 
         function updateQuantity(nom) {
@@ -161,10 +217,10 @@
 
         function emptyTable() {
             $('.transaksiItem').html(`
-                <tr>
-                    <td colspan="4">Belum ada item, silahkan tambahkan</td>
-                </tr>
-            `);
+        <tr>
+            <td colspan="4">Belum ada item, silahkan tambahkan</td>
+        </tr>
+    `);
         }
 
         $(document).ready(function() {
@@ -183,9 +239,10 @@
                                     .id_product + '" data-nama="' + product
                                     .name_product + '" data-harga="' + product
                                     .harga_satuan + '" data-id="' + product.id_product +
+                                    '" data-stok="' + product.stok_product +
                                     '">' + product.name_product + ' (Rp.' +
                                     formatRupiah(product.harga_satuan.toString()) +
-                                    ')</option>';
+                                    ') - Stok: ' + product.stok_product + '</option>';
                             });
                             $('#id_product').html(productOptions);
                         },

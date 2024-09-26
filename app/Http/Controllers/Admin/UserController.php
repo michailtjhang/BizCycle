@@ -67,8 +67,21 @@ class UserController extends Controller
             'role_id' => 'required',
         ]);
 
+        $user = User::latest()->first();
+        $kodeUser = "US";
+
+        if ($user == null) {
+            $id_user = $kodeUser . "001";
+        } else {
+            $id_user = $user->id_user;
+            $urutan = (int) substr($id_user, 3, 3);
+            $urutan++;
+            $id_user = $kodeUser . sprintf("%03s", $urutan);
+        }
+
         $data = $request->all();
         $data['password'] = Hash::make($data['password']);
+        $data['id_user'] = $id_user;
         $user = User::create($data);
 
         return redirect('admin/user')->with('success', 'User created successfully');

@@ -86,6 +86,70 @@ class PermissionSeeder extends Seeder
                 'groupby' => 2,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
+            ],
+            [
+                'id' => 10,
+                'name' => 'Product',
+                'slug' => 'Product',
+                'groupby' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'id' => 11,
+                'name' => 'Add Product',
+                'slug' => 'Add Product',
+                'groupby' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'id' => 12,
+                'name' => 'Edit Product',
+                'slug' => 'Edit Product',
+                'groupby' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'id' => 13,
+                'name' => 'Delete Product',
+                'slug' => 'Delete Product',
+                'groupby' => 3,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'id' => 14,
+                'name' => 'Transaksi',
+                'slug' => 'Transaksi',
+                'groupby' => 4,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'id' => 15,
+                'name' => 'Add Transaksi',
+                'slug' => 'Add Transaksi',
+                'groupby' => 4,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'id' => 16,
+                'name' => 'Supplier',
+                'slug' => 'Supplier',
+                'groupby' => 5,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [
+                'id' => 17,
+                'name' => 'Show Supplier',
+                'slug' => 'Show Supplier',
+                'groupby' => 5,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
             ]
         ]);
     }

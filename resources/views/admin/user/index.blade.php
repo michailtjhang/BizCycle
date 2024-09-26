@@ -5,7 +5,7 @@
     <div class="card">
         <nav aria-label="breadcrumb">
             <ol class="breadcrumb">
-                <li class="breadcrumb-item"><a href="{{ route('admin.dashboard') }}">Dashboard</a></li>
+                <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Dashboard</a></li>
                 <li class="breadcrumb-item active" aria-current="page">{{ $page_title }}</li>
             </ol>
         </nav>
@@ -47,6 +47,7 @@
 
                                     @if (!empty($data['PermissionDelete']))
                                         <button type="button" class="btn btn-sm btn-danger"
+                                            @if (auth()->user()->id === $row->id) disabled @endif
                                             onclick="confirmDelete('{{ route('user.destroy', $row->id) }}', '{{ $row->name }}')">
                                             <i class="fas fa-fw fa-trash"></i>
                                         </button>
