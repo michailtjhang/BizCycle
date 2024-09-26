@@ -58,7 +58,7 @@ class ProductController extends Controller
             $kodeProduct = $Code . $kode;
         }
 
-        $id_supplier = Supplier::where('id_user', auth()->user()->id_user)->first('id_supplier');
+        // $id_supplier = Supplier::where('id_user', auth()->user()->id_user)->first('id_supplier');
 
         Product::create([
             'id_product' => $kodeProduct,
@@ -66,7 +66,7 @@ class ProductController extends Controller
             'harga_satuan' => $request->harga,
             'stok_product' => $request->stok,
             'id_user' => Auth::user()->id_user,
-            'id_supplier' => $id_supplier->id_supplier,
+            // 'id_supplier' => $id_supplier->id_supplier,
         ]);
 
         return redirect('/admin/product');
