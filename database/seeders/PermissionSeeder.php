@@ -150,7 +150,15 @@ class PermissionSeeder extends Seeder
                 'groupby' => 5,
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
-            ]
+            ],
+            [
+                'id' => 18,
+                'name' => 'Reporting',
+                'slug' => 'Reporting',
+                'groupby' => 6,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
         ]);
     }
 }

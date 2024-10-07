@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\DashboardController;
 use App\Http\Controllers\Admin\TransaksiController;
 use App\Http\Controllers\Admin\Master\ProductController;
 use App\Http\Controllers\Admin\Master\SupplierController;
+use App\Http\Controllers\Admin\ReportingController;
 
 // Route
 Route::get('/', [AuthController::class, 'login'])->name('login');
@@ -33,5 +34,9 @@ Route::group(['middleware' => ['auth', 'useradmin']], function () {
 
         Route::get('/create-transaksi', [TransaksiController::class, 'create'])->name('create-transaksi');
         Route::get('/get-products/{supplier_id}', [TransaksiController::class, 'getProductsBySupplier']);
+
+        Route::get('/reporting', [ReportingController::class, 'index'])->name('reporting');
+        Route::get('/reporting/all-data-product', [ReportingController::class, 'getAllDataProduct'])->name('reporting.all-data-product');
+        Route::get('/reporting/chart-product', [ReportingController::class, 'getChartProduct'])->name('reporting.chart-product');
     });
 });

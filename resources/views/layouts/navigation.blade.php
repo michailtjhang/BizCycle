@@ -23,9 +23,13 @@
                 $PermissionUser = App\Models\PermissionRole::getPermission('User', Auth::user()->role_id);
                 $PermissionRole = App\Models\PermissionRole::getPermission('Role', Auth::user()->role_id);
                 $PermissionTransaksi = App\Models\PermissionRole::getPermission('Transaksi', Auth::user()->role_id);
-                $PermissionAddTransaksi = App\Models\PermissionRole::getPermission('Add Transaksi', Auth::user()->role_id);
+                $PermissionAddTransaksi = App\Models\PermissionRole::getPermission(
+                    'Add Transaksi',
+                    Auth::user()->role_id,
+                );
                 $PermissionProduct = App\Models\PermissionRole::getPermission('Product', Auth::user()->role_id);
                 $PermissionSupplier = App\Models\PermissionRole::getPermission('Supplier', Auth::user()->role_id);
+                $PermissionReporting = App\Models\PermissionRole::getPermission('Reporting', Auth::user()->role_id);
             @endphp
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu"
                 data-accordion="false">
@@ -41,37 +45,50 @@
                 </li>
 
                 @if (!empty($PermissionProduct) || !empty($PermissionSupplier))
-                <li class="nav-item">
-                    <a href="#" class="nav-link @if (Request::segment(2) == 'product' || Request::segment(2) == 'supplier') active @endif">
-                        <i class="nav-icon fas fa-database"></i>
-                        <p>
-                            Master
-                            <i class="right fas fa-angle-left"></i>
-                        </p>
-                    </a>
-                    <ul class="nav nav-treeview ">
+                    <li class="nav-item">
+                        <a href="#" class="nav-link @if (Request::segment(2) == 'product' || Request::segment(2) == 'supplier') active @endif">
+                            <i class="nav-icon fas fa-database"></i>
+                            <p>
+                                Master
+                                <i class="right fas fa-angle-left"></i>
+                            </p>
+                        </a>
+                        <ul class="nav nav-treeview ">
 
-                        @if (!empty($PermissionProduct))
-                            <li class="nav-item">
-                                <a href="{{ route('product.index') }}"
-                                    class="nav-link @if (Request::segment(2) == 'product') active @endif">
-                                    <i class="far fa-circle nav-icon"></i>
-                                    <p>Product</p>
-                                </a>
-                            </li>
-                        @endif
+                            @if (!empty($PermissionProduct))
+                                <li class="nav-item">
+                                    <a href="{{ route('product.index') }}"
+                                        class="nav-link @if (Request::segment(2) == 'product') active @endif">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Product</p>
+                                    </a>
+                                </li>
+                            @endif
 
-                        @if (!empty($PermissionSupplier))
-                        <li class="nav-item">
-                            <a href="{{ route('supplier.index') }}" class="nav-link @if (Request::segment(2) == 'supplier') active @endif">
-                                <i class="far fa-circle nav-icon"></i>
-                                <p>Supplier</p>
-                            </a>
-                        </li>
-                        @endif
+                            @if (!empty($PermissionSupplier))
+                                <li class="nav-item">
+                                    <a href="{{ route('supplier.index') }}"
+                                        class="nav-link @if (Request::segment(2) == 'supplier') active @endif">
+                                        <i class="far fa-circle nav-icon"></i>
+                                        <p>Supplier</p>
+                                    </a>
+                                </li>
+                            @endif
 
-                    </ul>
-                </li>
+                        </ul>
+                    </li>
+                @endif
+
+                @if (!empty($PermissionReporting))
+                    <li class="nav-item">
+                        <a href="{{ route('reporting') }}"
+                            class="nav-link @if (Request::segment(2) == 'reporting') active @endif">
+                            <i class="nav-icon fas fa-chart-pie"></i>
+                            <p>
+                                Reporting
+                            </p>
+                        </a>
+                    </li>
                 @endif
 
                 @if (!empty($PermissionTransaksi) || !empty($PermissionAddTransaksi))
@@ -106,7 +123,7 @@
                 @if (!empty($PermissionUser) || !empty($PermissionRole))
                     <li class="nav-header">Management</li>
                 @endif
-                
+
                 @if (!empty($PermissionUser))
                     <li class="nav-item">
                         <a href="{{ route('user.index') }}"
